@@ -15,6 +15,10 @@ def is_unique_chars(string: str) -> bool:
 
     return True
 
-
-assert s.solution(is_unique_chars, 'ab') == True
-assert s.solution(is_unique_chars, 'aba') == False
+Solution(
+    is_unique_chars,
+    [ 
+        Test(['ab'], True),
+        Test(['aba'], False)
+    ]
+)
