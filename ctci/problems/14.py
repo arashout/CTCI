@@ -33,8 +33,11 @@ def is_permutation_of_palindrome_optimized(char_list: List[str]) -> bool:
         value = ord(c) - offset
         bit_vector = toggle_bit(bit_vector, value)
     
+    # If bit_vector is power of two, it means there's only on odd toggle
+    # e.g. 00100 - 00001 = 00011 <- Notice that the 'and' of bit_vector & result is 0
     odd_mask = bit_vector - 1
-    return bit_vector == 0 or not (bit_vector & odd_mask)
+    is_power_of_two = not (bit_vector & odd_mask)
+    return bit_vector == 0 or is_power_of_two
 
 Solution(
     is_permutation_of_palindrome,
