@@ -1,4 +1,7 @@
-from Testing import Solution, Test
+import sys
+sys.path.append("..")
+
+from .. import Solution, Test
 
 def is_unique_chars(string: str) -> bool:
     if len(string) > 128:
