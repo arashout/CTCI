@@ -1,5 +1,5 @@
-from Testing import Solution, Test
-from LinkedList import SinglyLinkedList, SinglyNode, parse
+from problems.utils.testing import Solution, Test
+from problems.utils.linked_list import SinglyLinkedList, SinglyNode, parse
 
 
 def merge_sorted_lists(a: list, b: list) -> list:

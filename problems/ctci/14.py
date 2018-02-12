@@ -1,4 +1,4 @@
-from Testing import Test, Solution
+from problems.utils.testing import Solution, Test
 from typing import List
 
 def is_permutation_of_palindrome(char_list: List[str]) -> bool:

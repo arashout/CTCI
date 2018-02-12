@@ -1,4 +1,4 @@
-from Testing import Solution, Test
+from problems.utils.testing import Solution, Test
 from typing import List
 
 

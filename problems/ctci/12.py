@@ -1,4 +1,4 @@
-from Testing import Solution, Test
+from problems.utils.testing import Solution, Test
 
 def check_permutation(a: str, b: str) -> bool:
     freq_table = [0] * 128

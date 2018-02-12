@@ -1,4 +1,4 @@
-from typing import List
+from problems.utils.testing import Solution, Test
 from Testing import Solution, Test
 
 def compress_string(s: str) -> str:
