@@ -49,7 +49,7 @@ class SinglyLinkedList(LinkedList):
         return string
 
     def prepend(self, data: Any):
-        if self.h ead is None:
+        if self.head is None:
             self.head = SinglyNode(data)
         else:
             temp = self.head
