@@ -3,3 +3,4 @@
 # Python
 __pycache__/
 .DS_Store
+algo_problems.egg-info/
