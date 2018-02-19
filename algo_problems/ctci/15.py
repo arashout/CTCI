@@ -1,4 +1,4 @@
-from problems.utils.testing import Solution, Test
+from algo_problems.utils.testing import Solution, Test
 from typing import List
 
 def one_away(a: str, b: str) -> bool:

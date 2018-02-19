@@ -1,4 +1,4 @@
-from problems.utils.testing import Solution, Test
+from algo_problems.utils.testing import Solution, Test
 
 def is_unique_chars(string: str) -> bool:
     if len(string) > 128:
