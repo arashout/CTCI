@@ -1,10 +1,13 @@
 from algo_problems.utils.testing import Solution, Test
-from typing import NamedTuple, Any
+from typing import Any
 from abc import ABC
 
 
-class Node(NamedTuple):
+class Node:
     data: Any
+
+    def __init__(self, data: Any):
+        self.data = data
 
     def __repr__(self):
         return 'N: ' + str(self.data)
@@ -16,10 +19,15 @@ class Node(NamedTuple):
 class SinglyNode(Node):
     next: Node
 
-    def __new__(cls, node: Node):
-        self = super(SinglyNode, cls).__new__(cls, node)
+    def __init__(self, data: Any):
+        self.data = data
         self.next = None
-        return self
+
+    def __eq__(self, other: Node):
+        """Overrides the default implementation"""
+        if isinstance(self, other.__class__):
+            return self.__dict__ == other.__dict__
+        return False
 
 
 class DoublyNode(Node):
@@ -47,6 +55,12 @@ class SinglyLinkedList(LinkedList):
             node = node.next
 
         return string
+
+    def __eq__(self, other: LinkedList):
+        """Overrides the default implementation"""
+        if isinstance(self, other.__class__):
+            return self.__dict__ == other.__dict__
+        return False
 
     def prepend(self, data: Any):
         if self.head is None:
@@ -79,7 +93,15 @@ class SinglyLinkedList(LinkedList):
             cur = temp
 
         return
+    
+    def k_th(self, k) -> SinglyNode:
+        node = self.head
+        for _ in range(k):
+            if node is None:
+                return None
 
+            node = node.next
+        return node
 
 def parse(string: str, is_doubly_linked: bool = False) -> LinkedList:
     if is_doubly_linked:

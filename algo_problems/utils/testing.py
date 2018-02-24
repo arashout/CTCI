@@ -19,13 +19,18 @@ def assert_with_messages(i: int, args: List[Any], actual: Any, expected: Any, su
 class Test(NamedTuple):
     args: List[Any]
     expected: Any
+    mutated: Any
     
 class Solution:
     def __init__(self, function: Callable, test_table: List[Test], name = '', stub = ''):
 
         # Run tests from test table
         for i, t in enumerate(test_table):
-            actual = function(*t.args)
-            assert_with_messages(i, t.args, actual, t.expected)
+            if t.mutated is None:
+                actual = function(*t.args)
+                assert_with_messages(i, t.args, actual, t.expected)
+            else:
+                function(*t.args)
+                assert_with_messages(i, t.args, t.mutated, t.expected)
         
         print('\n{0} Tests passed'.format(len(test_table)))
