@@ -12,7 +12,7 @@ def assert_with_messages(i: int, args: List[Any], actual: Any, expected: Any, su
     {2}
     Expected:
     {3}
-    """.format(i, args, actual, expected)
+    """.format(i+1, args, actual, expected)
     assert actual == expected and success_helper(), failed_message
 
 
