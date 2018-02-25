@@ -43,7 +43,7 @@ class LinkedList(ABC):
 class SinglyLinkedList(LinkedList):
     head: SinglyNode
 
-    def __init__(self, head: SinglyNode):
+    def __init__(self, head: SinglyNode = None):
         self.head = head
 
     def __repr__(self):
@@ -117,3 +117,17 @@ def parse(string: str, is_doubly_linked: bool = False) -> LinkedList:
             data = int(split_string[i])
             sll.prepend(data)
         return sll
+
+def head_to_linked_list(head: SinglyNode) -> SinglyLinkedList:
+    sll = SinglyLinkedList()
+    temp_list = []
+    
+    while head is not None:
+        temp_list.append(head.data)
+        head = head.next
+    
+    for i in range(len(temp_list)-1, -1, -1):
+        sll.prepend(temp_list[i])
+    
+    return sll
+
