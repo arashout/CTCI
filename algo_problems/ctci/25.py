@@ -72,11 +72,11 @@ def add_lists(a: SinglyNode, b: SinglyNode, carry = 0) -> SinglyNode:
 Solution(
     add_lists,
     [
-        # Test(
-        #     [parse('1>2>3').head, parse('4>5>6').head],
-        #     parse('5>7>9').head,
-        #     None
-        # ),
+        Test(
+            [parse('1>2>3').head, parse('4>5>6').head],
+            parse('5>7>9').head,
+            None
+        ),
         Test(
             [parse('1>2>9').head, parse('4>5>6').head],
             parse('5>7>5>1').head,
@@ -84,3 +84,8 @@ Solution(
         )
     ]
 )
+
+# TODO: Complete this one when you more comfortable with recursion
+def add_lists_follow_up(a: SinglyNode, b: SinglyNode) -> SinglyNode:
+    return a
+
