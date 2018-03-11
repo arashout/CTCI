@@ -3,12 +3,7 @@ from typing import Any
 from abc import ABC
 
 
-class Node:
-    data: Any
-
-    def __init__(self, data: Any):
-        self.data = data
-
+class Node(ABC):
     def __repr__(self):
         return 'N: ' + str(self.data)
 
@@ -17,8 +12,6 @@ class Node:
 
 
 class SinglyNode(Node):
-    next: Node
-
     def __init__(self, data: Any):
         self.data = data
         self.next = None
@@ -30,9 +23,17 @@ class SinglyNode(Node):
         return False
 
 
-class DoublyNode(Node):
-    next: Node
-    prev: Node
+class DoublyNode(ABC):
+    def __init__(self, data: Any):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+    def __eq__(self, other: Node):
+        """Overrides the default implementation"""
+        if isinstance(self, other.__class__):
+            return self.__dict__ == other.__dict__
+        return False
 
 
 class LinkedList(ABC):

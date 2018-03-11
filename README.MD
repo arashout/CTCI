@@ -7,6 +7,7 @@ Github repo where I practice algorithm questions from different resources
 - [ ] 2.8 Circular Loop Node Start
 - [ ] 3.1 Multi-Stack <-- Very long!
 - [ ] 3.3 Implement roll over part
+- [ ] 3.6 Cats and Dogs... Pretty simple but long to write
 ## Random:
 - [ ] Write and read binary tree to a file 
 
