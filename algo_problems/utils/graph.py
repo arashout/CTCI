@@ -1,6 +1,8 @@
 from typing import List, Any, Tuple
 
 class Vertex:
+    children: List['Vertex']
+    
     def __init__(self, val:Any):
         self.val = val
         self.children = []

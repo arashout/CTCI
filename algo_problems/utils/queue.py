@@ -34,14 +34,14 @@ class Queue():
         # Make the new_node the tail
         self.tail = new_node
     
-    def dequeue(self) -> SinglyNode:
+    def dequeue(self) -> Any:
         if self.head is None:
             raise IndexError('No elements to dequeue')
 
         old_head = self.head
         self.head = self.head.next
         
-        return old_head
+        return old_head.data
     
     def is_empty(self) -> bool:
         return self.head is None

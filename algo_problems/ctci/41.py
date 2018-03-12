@@ -1,5 +1,6 @@
 from algo_problems.utils.testing import Solution, Test
 from algo_problems.utils.graph import Graph, Vertex, build_simple_graph
+from algo_problems.utils.queue import Queue
 
 from typing import Dict
 
@@ -21,9 +22,23 @@ def has_path(v: Vertex, w: Vertex) -> bool:
     
 
 def has_path2(v: Vertex, w:Vertex) -> bool:
-    # TODO: Implement with breadth first search
-    raise NotImplementedError
+    q = Queue()
+    seen: Dict[Vertex, bool] = {}
 
+    q.enqueue(v)
+    while not q.is_empty():
+        u = q.dequeue()
+
+        if u in seen:
+            pass
+        else:
+            if u == w:
+                return True
+            for vertex in u.children:
+                q.enqueue(vertex)
+    
+    return False
+    
 g1 = build_simple_graph(7,
                         [
                             (1, 2),
