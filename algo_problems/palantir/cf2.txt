@@ -1,5 +1,0 @@
-David;START
-David;24
-Evil;START
-Evil;START
-Evil;18;20
