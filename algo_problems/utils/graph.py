@@ -1,46 +1,28 @@
-from typing import List, Any, Tuple
+from typing import List, Tuple
 
-class Vertex:
-    children: List['Vertex']
+class UndirectedGraph:
+    def __init__(self, n: int):
+        self.vertices: List[list] = [[] for i in range(n)]
     
-    def __init__(self, val:Any):
-        self.val = val
-        self.children = []
-    
-    def __repr__(self) -> str:
-        return  'v: {0}'.format(self.val)
-class Graph:
-    def __init__(self, vertices: List[Vertex] = []):
-        self.vertices = vertices
-    
-    def get_vertex_by_index(self, i: int) -> Vertex:
-        if i >= len(self.vertices):
-            # TODO: Add more information?
-            raise IndexError('Vertex index out of bounds')
-        return self.vertices[i]
-    
-    def add_vertex(self, v: Vertex):
-        self.vertices.append(v)
-    
-    def add_edge_by_index(self, i: int, j: int, undirected = False):
+    def add_edge(self, i: int, j:int, undirected = False):
         # Check if within bounds
         if i >= len(self.vertices) or j >= len(self.vertices):
             # TODO: Add more information?
             raise IndexError('Vertex index out of bounds')
 
-        v = self.vertices[i]
-        w = self.vertices[j]
-        v.children.append(w)
-
+        self.vertices[i].append(j)
+        
         if undirected:
-            w.children.append(v)
+            self.vertices[j].append(i)
+    
+    def adj(self, i: int):
+        return self.vertices[i]
 
 
-
-def build_simple_graph(n: int, edges: tuple) -> Graph:
-    g = Graph([Vertex(i) for i in range(n)])
+def build_simple_graph(n: int, edges: tuple) -> UndirectedGraph:
+    g = UndirectedGraph(n)
     for e in edges:
-        g.add_edge_by_index(e[0], e[1])
+        g.add_edge(e[0], e[1])
     return g
 
     

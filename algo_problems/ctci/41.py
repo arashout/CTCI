@@ -1,17 +1,17 @@
 from algo_problems.utils.testing import Solution, Test
-from algo_problems.utils.graph import Graph, Vertex, build_simple_graph
+from algo_problems.utils.graph import UndirectedGraph, build_simple_graph
 from algo_problems.utils.queue import Queue
 
 from typing import Dict
 
 
-def has_path(v: Vertex, w: Vertex) -> bool:
-    def helper(_v: Vertex, _w: Vertex, seen: Dict[Vertex, bool]):
+def has_path(g: UndirectedGraph, v: int, w: int) -> bool:
+    def helper(_v: int, _w: int, seen: Dict[int, bool]):
         if _v == _w:
             return True
 
         seen[_v] = True
-        for u in _v.children:
+        for u in g.adj(_v):
             if u in seen:
                 pass
             elif helper(u, _w, seen):
@@ -21,9 +21,9 @@ def has_path(v: Vertex, w: Vertex) -> bool:
     return helper(v, w, {})
     
 
-def has_path2(v: Vertex, w:Vertex) -> bool:
+def has_path2(g: UndirectedGraph, v: int, w:int) -> bool:
     q = Queue()
-    seen: Dict[Vertex, bool] = {}
+    seen: Dict[i, bool] = {}
 
     q.enqueue(v)
     while not q.is_empty():
@@ -34,7 +34,7 @@ def has_path2(v: Vertex, w:Vertex) -> bool:
         else:
             if u == w:
                 return True
-            for vertex in u.children:
+            for vertex in g.adj(u):
                 q.enqueue(vertex)
     
     return False
@@ -53,12 +53,12 @@ Solution(
     has_path,
     [
         Test(
-            [g1.get_vertex_by_index(1), g1.get_vertex_by_index(3)],
+            [g1, 1, 3],
             False,
             None
         ),
         Test(
-            [g1.get_vertex_by_index(3), g1.get_vertex_by_index(5)],
+            [g1, 3, 5],
             True,
             None
         )
@@ -69,12 +69,12 @@ Solution(
     has_path2,
     [
         Test(
-            [g1.get_vertex_by_index(1), g1.get_vertex_by_index(3)],
+            [g1, 1, 3],
             False,
             None
         ),
         Test(
-            [g1.get_vertex_by_index(3), g1.get_vertex_by_index(5)],
+            [g1, 3, 5],
             True,
             None
         )
