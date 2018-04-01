@@ -104,6 +104,7 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
                 return HelperResult(parent, read_result.position)
 
             else:
+                # Should never reach this point
                 raise NotImplementedError()
         
         return HelperResult(parent, read_result.position + 1)
@@ -135,8 +136,8 @@ class BinaryTreeTest(unittest.TestCase):
         parsed_tree = parse_tree( str(self.tree) )
         self.assertEqual(str(self.tree),  str(parsed_tree))
     
-    # def test_get_max_depth(self):
-    #     tree = parse_tree("1 (23,24)")
+    def test_get_max_depth(self):
+        self.assertEqual(2, get_max_depth(self.tree))
 
 if __name__ == '__main__':
     unittest.main()
