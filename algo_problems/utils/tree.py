@@ -53,7 +53,7 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
         RIGHT_PARENTHESIS = ')'
         COMMA = ','
         VALUE = 'value'
-    
+
     class ValueAction(enum.Enum):
         LEFT_CHILD = 0
         RIGHT_CHILD = 1
@@ -64,14 +64,10 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
         has_value: bool
         token: Token
         position: int
-    
+
     class ASTNode(NamedTuple):
         value: int
         token: Token
-
-    class HelperResult(NamedTuple):
-        parent: BinaryTreeNode
-        position: int
 
     tokens = {t.value: True for t in Token}
 
@@ -102,7 +98,6 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
             i = read_result.position + 1
 
         return ast_nodes
-        
 
     tree_text = tree_text.replace(' ', '')
     if len(tree_text) == 0:
@@ -111,15 +106,12 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
     # First node is always the root
     if ast_nodes[0].token is not Token.VALUE:
         raise ValueError('Root should be first node')
-    
-    # Stack
-    s = []
 
+    # Stack to replace recursion
+    s = []
     cur_node = BinaryTreeNode(ast_nodes[0].value)
     cur_action = None
-
     i = 1
-
     while i < len(ast_nodes):
         ast_node = ast_nodes[i]
         if ast_node.token is Token.LEFT_PARENTHESIS:
@@ -133,16 +125,32 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
                 s[-1].left = cur_node
             elif cur_action is ValueAction.RIGHT_CHILD:
                 s[-1].right = cur_node
-            
+
         elif ast_node.token is Token.COMMA:
             cur_action = ValueAction.RIGHT_CHILD
 
         elif ast_node.token is Token.RIGHT_PARENTHESIS:
             # Last pop will be root!
             parent = s.pop()
-        
-        i +=1 
+
+        i += 1
     return parent
+
+
+def is_bst(node: BinaryTreeNode) -> bool:
+    if node is None:
+        return True
+
+    if node.left is not None and node.left.val > node.val:
+        return False
+
+    if node.right is not None and node.right.val < node.val:
+        return False
+
+    if not is_bst(node.left) or not is_bst(node.right):
+        return False
+
+    return True
 
 
 class BinaryTreeTest(unittest.TestCase):
@@ -176,6 +184,13 @@ class BinaryTreeTest(unittest.TestCase):
 
         deep_tree = parse_tree('10(11(12(13(14,),),),)')
         self.assertEqual(4, get_max_depth(deep_tree))
+
+    def test_is_bst(self):
+        self.assertTrue(is_bst(self.t1))
+        self.assertTrue(is_bst(self.t2))
+
+        not_bst = parse_tree('10(11(12(13(14,),),),)')
+        self.assertFalse(is_bst(not_bst))
 
 
 if __name__ == '__main__':
