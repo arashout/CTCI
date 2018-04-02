@@ -1,6 +1,6 @@
 import unittest
 import enum
-
+import sys
 from typing import List, Tuple, NamedTuple
 
 
@@ -31,6 +31,21 @@ class BinaryTreeNode:
 
     def __repr__(self):
         return str(self)
+    
+    def __eq__(self, other: 'BinaryTreeNode') -> bool:
+        if not isinstance(other, BinaryTreeNode):
+            return False
+
+        if self is not None and other is not None:
+            if self.val == other.val:
+                return self.left == other.left and self.right == other.right
+
+            else:
+                return False
+
+        elif self is None and other is None:
+            return True
+        return False
 
 
 def get_max_depth(root: BinaryTreeNode):
@@ -53,11 +68,11 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
         RIGHT_PARENTHESIS = ')'
         COMMA = ','
         VALUE = 'value'
+        END = ''
 
     class ValueAction(enum.Enum):
         LEFT_CHILD = 0
         RIGHT_CHILD = 1
-        PARENT = 2
 
     class ReadResult(NamedTuple):
         value: int
@@ -76,13 +91,13 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
         if i >= len(text):
             return ReadResult(0, False, Token.END, i)
 
-        while text[i] not in tokens:
+        while i < len(text) and text[i] not in tokens:
             buffer += text[i]
             i += 1
 
         if len(buffer) == 0:
             return ReadResult(0, False, Token(text[i]), i)
-
+        
         return ReadResult(int(buffer), True, Token(text[i]), i)
 
     def create_ast(text: str) -> List[ASTNode]:
@@ -111,7 +126,9 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
     s = []
     cur_node = BinaryTreeNode(ast_nodes[0].value)
     cur_action = None
+    parent = None
     i = 1
+
     while i < len(ast_nodes):
         ast_node = ast_nodes[i]
         if ast_node.token is Token.LEFT_PARENTHESIS:
@@ -134,23 +151,24 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
             parent = s.pop()
 
         i += 1
+    
+    if parent is None:
+        return cur_node
+
     return parent
 
 
-def is_bst(node: BinaryTreeNode) -> bool:
-    if node is None:
-        return True
+def is_bst(root: BinaryTreeNode) -> bool:
+    def helper(node: BinaryTreeNode, current_min: int, current_max: int) -> bool:
+        if node is None:
+            return True
 
-    if node.left is not None and node.left.val > node.val:
-        return False
-
-    if node.right is not None and node.right.val < node.val:
-        return False
-
-    if not is_bst(node.left) or not is_bst(node.right):
-        return False
-
-    return True
+        if node.val < current_min or node.val > current_max:
+            return False
+        
+        return helper(node.left, current_min, node.val) and helper(node.right, node.val, current_max)
+    
+    return helper(root, -sys.maxsize -1, sys.maxsize)
 
 
 class BinaryTreeTest(unittest.TestCase):
@@ -177,6 +195,10 @@ class BinaryTreeTest(unittest.TestCase):
         """Parsed tree should be same as original"""
         self.assertEqual(str(self.t1),  str(parse_tree(str(self.t1))))
         self.assertEqual(str(self.t2),  str(parse_tree(str(self.t2))))
+    
+    def test_eq(self):
+        self.assertEqual(parse_tree('10(6(4,7),11)'), parse_tree('10(6(4,7),11)'))
+        self.assertNotEqual(parse_tree('10(6(4,7),11)'), parse_tree('10(6(4,7),12)'))
 
     def test_get_max_depth(self):
         self.assertEqual(2, get_max_depth(self.t1))
@@ -188,9 +210,8 @@ class BinaryTreeTest(unittest.TestCase):
     def test_is_bst(self):
         self.assertTrue(is_bst(self.t1))
         self.assertTrue(is_bst(self.t2))
-
-        not_bst = parse_tree('10(11(12(13(14,),),),)')
-        self.assertFalse(is_bst(not_bst))
+        self.assertFalse(is_bst(parse_tree('3(2(1,4),5)')))
+        self.assertTrue(is_bst(parse_tree('3(2(1,),5)')))
 
 
 if __name__ == '__main__':
