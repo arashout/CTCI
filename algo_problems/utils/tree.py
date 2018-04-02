@@ -9,23 +9,26 @@ class BinaryTreeNode:
         self.val = val
         self.left: BinaryTreeNode = None
         self.right: BinaryTreeNode = None
-    
+
     def __str__(self):
         """ Returns a pre-order text representation of the tree """
         def helper(node: BinaryTreeNode, text: str) -> str:
             if node is not None:
                 text += str(node.val)
-            
-            if node.left is not None:
-                text = helper(node.left, text + '(')
 
-            if node.right is not None:
-                text = helper(node.right, text + ',') + ')'
-            
+            if node.left is not None or node.right is not None:
+                text += '('
+                if node.left is not None:
+                    text = helper(node.left, text)
+                text += ','
+                if node.right is not None:
+                    text = helper(node.right, text)
+                text += ')'
+
             return text
 
         return helper(self, '')
-    
+
     def __repr__(self):
         return str(self)
 
@@ -43,12 +46,18 @@ def get_max_depth(root: BinaryTreeNode):
 
     return helper(root, 0)
 
+
 def parse_tree(tree_text: str) -> BinaryTreeNode:
     class Token(enum.Enum):
         LEFT_PARENTHESIS = '('
         RIGHT_PARENTHESIS = ')'
         COMMA = ','
-        END = ''
+        VALUE = 'value'
+    
+    class ValueAction(enum.Enum):
+        LEFT_CHILD = 0
+        RIGHT_CHILD = 1
+        PARENT = 2
 
     class ReadResult(NamedTuple):
         value: int
@@ -56,18 +65,21 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
         token: Token
         position: int
     
+    class ASTNode(NamedTuple):
+        value: int
+        token: Token
+
     class HelperResult(NamedTuple):
         parent: BinaryTreeNode
         position: int
 
-
-    tokens = {t.value:True for t in Token}
+    tokens = {t.value: True for t in Token}
 
     def read_until_token(text: str, i: int) -> ReadResult:
         buffer = ''
         if i >= len(text):
             return ReadResult(0, False, Token.END, i)
-        
+
         while text[i] not in tokens:
             buffer += text[i]
             i += 1
@@ -77,45 +89,60 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
 
         return ReadResult(int(buffer), True, Token(text[i]), i)
 
-    def helper(text: str, i: int, parent: BinaryTreeNode) -> HelperResult:
-        while True:
+    def create_ast(text: str) -> List[ASTNode]:
+        ast_nodes = []
+        i = 0
+        while i < len(text):
             read_result = read_until_token(text, i)
-            if read_result.token is Token.LEFT_PARENTHESIS:
-                if parent is None:
-                    parent = BinaryTreeNode(read_result.value)
-                    i = helper(text, read_result.position + 1, parent).position
-                else:
-                    parent.left = BinaryTreeNode(read_result.value)
-                    i = helper(text, read_result.position + 1, parent.left).position
-
-            elif read_result.token is Token.COMMA:
-                # Could be case of '),' so we check if it contains value
-                if read_result.has_value:
-                    parent.left = BinaryTreeNode(read_result.value)
-                    i += 1
-                else:
-                    i += 1
-
-            elif read_result.token is Token.RIGHT_PARENTHESIS:
-                parent.right = BinaryTreeNode(read_result.value)
-                return HelperResult(parent, read_result.position + 1)
-            
-            elif read_result.token is Token.END:
-                return HelperResult(parent, read_result.position)
-
+            if read_result.has_value:
+                ast_nodes.append(ASTNode(read_result.value, Token.VALUE))
+                ast_nodes.append(ASTNode(0, read_result.token))
             else:
-                # Should never reach this point
-                raise NotImplementedError()
-        
-        return HelperResult(parent, read_result.position + 1)
-        
+                ast_nodes.append(ASTNode(0, read_result.token))
+            i = read_result.position + 1
 
+        return ast_nodes
+        
 
     tree_text = tree_text.replace(' ', '')
     if len(tree_text) == 0:
         return None
+    ast_nodes = create_ast(tree_text)
+    # First node is always the root
+    if ast_nodes[0].token is not Token.VALUE:
+        raise ValueError('Root should be first node')
+    
+    # Stack
+    s = []
 
-    return helper(tree_text, 0, None).parent
+    cur_node = BinaryTreeNode(ast_nodes[0].value)
+    cur_action = None
+
+    i = 1
+
+    while i < len(ast_nodes):
+        ast_node = ast_nodes[i]
+        if ast_node.token is Token.LEFT_PARENTHESIS:
+            s.append(cur_node)
+            cur_action = ValueAction.LEFT_CHILD
+
+        elif ast_node.token is Token.VALUE:
+            cur_node = BinaryTreeNode(ast_node.value)
+
+            if cur_action is ValueAction.LEFT_CHILD:
+                s[-1].left = cur_node
+            elif cur_action is ValueAction.RIGHT_CHILD:
+                s[-1].right = cur_node
+            
+        elif ast_node.token is Token.COMMA:
+            cur_action = ValueAction.RIGHT_CHILD
+
+        elif ast_node.token is Token.RIGHT_PARENTHESIS:
+            # Last pop will be root!
+            parent = s.pop()
+        
+        i +=1 
+    return parent
 
 
 class BinaryTreeTest(unittest.TestCase):
@@ -123,21 +150,33 @@ class BinaryTreeTest(unittest.TestCase):
         root = BinaryTreeNode(10)
         root.left = BinaryTreeNode(6)
         root.right = BinaryTreeNode(11)
-
         root.left.left = BinaryTreeNode(4)
         root.left.right = BinaryTreeNode(7)
+        self.t1 = root
 
-        self.tree = root
+        root = BinaryTreeNode(10)
+        root.left = BinaryTreeNode(6)
+        root.right = BinaryTreeNode(11)
+        root.left.left = BinaryTreeNode(4)
+        root.right.right = BinaryTreeNode(12)
+        self.t2 = root
 
     def test_str(self):
-        self.assertEqual('10(6(4,7),11)',  str(self.tree))
+        self.assertEqual('10(6(4,7),11)',  str(self.t1))
+        self.assertEqual('10(6(4,),11(,12))', str(self.t2))
 
     def test_parse_tree(self):
-        parsed_tree = parse_tree( str(self.tree) )
-        self.assertEqual(str(self.tree),  str(parsed_tree))
-    
+        """Parsed tree should be same as original"""
+        self.assertEqual(str(self.t1),  str(parse_tree(str(self.t1))))
+        self.assertEqual(str(self.t2),  str(parse_tree(str(self.t2))))
+
     def test_get_max_depth(self):
-        self.assertEqual(2, get_max_depth(self.tree))
+        self.assertEqual(2, get_max_depth(self.t1))
+        self.assertEqual(2, get_max_depth(self.t2))
+
+        deep_tree = parse_tree('10(11(12(13(14,),),),)')
+        self.assertEqual(4, get_max_depth(deep_tree))
+
 
 if __name__ == '__main__':
     unittest.main()
