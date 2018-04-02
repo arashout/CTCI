@@ -95,10 +95,13 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
             buffer += text[i]
             i += 1
 
-        if len(buffer) == 0:
-            return ReadResult(0, False, Token(text[i]), i)
+        if i < len(text):
+            if len(buffer) == 0:
+                return ReadResult(0, False, Token(text[i]), i)
         
-        return ReadResult(int(buffer), True, Token(text[i]), i)
+            return ReadResult(int(buffer), True, Token(text[i]), i)
+        
+        return ReadResult(int(buffer), True, Token.VALUE, i)
 
     def create_ast(text: str) -> List[ASTNode]:
         ast_nodes = []
@@ -107,6 +110,8 @@ def parse_tree(tree_text: str) -> BinaryTreeNode:
             read_result = read_until_token(text, i)
             if read_result.has_value:
                 ast_nodes.append(ASTNode(read_result.value, Token.VALUE))
+                if read_result.position == len(text):
+                    break
                 ast_nodes.append(ASTNode(0, read_result.token))
             else:
                 ast_nodes.append(ASTNode(0, read_result.token))
