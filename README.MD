@@ -8,8 +8,9 @@ Github repo where I practice algorithm questions from different resources
 - [ ] 3.1 Multi-Stack <-- Very long!
 - [ ] 3.3 Implement roll over part
 - [ ] 3.6 Cats and Dogs... Pretty simple but long to write
+- [ ] 4.2 Re-visit list to BST
 ## Random:
-- [ ] Write and read binary tree to a file 
+- [x] Write and read binary tree to a file 
 
 ## Princeton Algorithms 2 Interview Problems
 - Given a connected graph with no cycles:
@@ -24,3 +25,4 @@ Github repo where I practice algorithm questions from different resources
 
 ## Palantir
 - [ ] Solve Contractor Fraud problem
+
