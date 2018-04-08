@@ -4,6 +4,7 @@ from abc import ABC
 
 
 class Node(ABC):
+    data: any
     def __repr__(self):
         return 'N: ' + str(self.data)
 
@@ -12,6 +13,7 @@ class Node(ABC):
 
 
 class SinglyNode(Node):
+    next: 'SinglyNode'
     def __init__(self, data: Any):
         self.data = data
         self.next = None
@@ -29,7 +31,7 @@ class DoublyNode(ABC):
         self.next = None
         self.prev = None
 
-    def __eq__(self, other: Node):
+    def __eq__(self, other: 'DoublyNode'):
         """Overrides the default implementation"""
         if isinstance(self, other.__class__):
             return self.__dict__ == other.__dict__
@@ -56,6 +58,12 @@ class SinglyLinkedList(LinkedList):
             node = node.next
 
         return string
+    
+    def __iter__(self: 'SinglyLinkedList'):
+        current = self.head
+        while current is not None:
+            yield current.data
+            current = current.next
 
     def __eq__(self, other: LinkedList):
         """Overrides the default implementation"""
