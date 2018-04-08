@@ -1,6 +1,6 @@
 from algo_problems.utils.tree import BinaryTreeNode, parse_tree
 from algo_problems.utils.testing import Solution, Test
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 def check_balanced(root: BinaryTreeNode) -> bool:
     class Result(NamedTuple):
