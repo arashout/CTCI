@@ -17,6 +17,14 @@ def assert_with_messages(i: int, args: List[Any], actual: Any, expected: Any, su
 
 # TODO: Add post processing function call
 class Test(NamedTuple):
+    """ Test data class to be used in conjunction with a Solution class
+    
+    Arguments:
+        args: List[Any]
+        expected: Any
+        mutated: Any
+    """
+
     args: List[Any]
     expected: Any
     mutated: Any
