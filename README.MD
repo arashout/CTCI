@@ -9,6 +9,8 @@ Github repo where I practice algorithm questions from different resources
 - [ ] 3.3 Implement roll over part
 - [ ] 3.6 Cats and Dogs... Pretty simple but long to write
 - [ ] 4.2 Re-visit list to BST
+## Leetcode:
+- [ ] 10 : Try FSM approach for regex with wildcard
 ## Random:
 - [x] Write and read binary tree to a file 
 
